@@ -1,0 +1,208 @@
+{
+  "$schema": "https://gitnexus-cgc-combo.dev/platform-matrix.schema.json",
+  "version": "1.0.0",
+  "description": "Platform registry for multi-agent MCP config generation. Maps each AI coding platform to its config format, file paths, and capabilities.",
+  "mcp_families": {
+    "mcpServers": {
+      "wrapper_key": "mcpServers",
+      "server_format": {
+        "command": "string (executable name)",
+        "args": ["array of strings"],
+        "env": "optional object of env vars"
+      },
+      "platforms": ["claude-code", "cursor", "cline", "roo-code", "continue", "windsurf", "augment", "copilot-cli"]
+    },
+    "mcp": {
+      "wrapper_key": "mcp",
+      "server_format": {
+        "type": "local",
+        "command": ["array of strings (executable + args combined)"],
+        "workdir": "optional string (working directory)"
+      },
+      "platforms": ["kilo", "opencode"]
+    },
+    "servers": {
+      "wrapper_key": "servers",
+      "server_format": {
+        "type": "stdio",
+        "command": "string (executable name)",
+        "args": ["array of strings"],
+        "env": "optional object of env vars"
+      },
+      "platforms": ["copilot-vscode"]
+    }
+  },
+  "platforms": {
+    "kilo": {
+      "name": "Kilo",
+      "mcp_family": "mcp",
+      "mcp_file": ".kilo/kilo.json",
+      "instructions_files": ["AGENTS.md"],
+      "skills_dir": ".kilo/skills",
+      "skills_supported": true,
+      "auto_mcp": true,
+      "merge_strategy": "merge-into-existing-json",
+      "detection_markers": [".kilo/", "kilo.json", ".kilo/kilo.json"],
+      "note": "MCP servers go under the 'mcp' key with 'type': 'local'. Merge with any existing mcp entries."
+    },
+    "claude-code": {
+      "name": "Claude Code",
+      "mcp_family": "mcpServers",
+      "mcp_file": ".mcp.json",
+      "instructions_files": ["CLAUDE.md", "AGENTS.md"],
+      "skills_dir": ".claude/skills",
+      "skills_supported": true,
+      "auto_mcp": true,
+      "merge_strategy": "merge-into-existing-json",
+      "detection_markers": [".mcp.json", "CLAUDE.md", ".claude/"],
+      "note": "Standard mcpServers format. Skills directory is .claude/skills/."
+    },
+    "cursor": {
+      "name": "Cursor",
+      "mcp_family": "mcpServers",
+      "mcp_file": ".cursor/mcp.json",
+      "instructions_files": [".cursor/rules/combo.md", ".cursorrules", "AGENTS.md"],
+      "skills_dir": null,
+      "skills_supported": false,
+      "auto_mcp": true,
+      "merge_strategy": "merge-into-existing-json",
+      "detection_markers": [".cursor/", ".cursorrules"],
+      "note": "Uses .cursor/rules/ for instructions. No native skill system — embed rules in AGENTS.md sections."
+    },
+    "cline": {
+      "name": "Cline",
+      "mcp_family": "mcpServers",
+      "mcp_file": ".cline/mcp.json",
+      "instructions_files": [".clinerules", "AGENTS.md"],
+      "skills_dir": null,
+      "skills_supported": false,
+      "auto_mcp": true,
+      "merge_strategy": "merge-into-existing-json",
+      "detection_markers": [".cline/", ".clinerules", "CLINE.md"],
+      "note": "Also reads .clinerules directory for multiple rule files."
+    },
+    "roo-code": {
+      "name": "Roo Code",
+      "mcp_family": "mcpServers",
+      "mcp_file": ".roo/mcp.json",
+      "instructions_files": [".roorules", "AGENTS.md"],
+      "skills_dir": null,
+      "skills_supported": false,
+      "auto_mcp": true,
+      "merge_strategy": "merge-into-existing-json",
+      "detection_markers": [".roo/", ".roorules"],
+      "note": "Falls back to .cursorrules if .roorules is missing."
+    },
+    "continue": {
+      "name": "Continue.dev",
+      "mcp_family": "mcpServers",
+      "mcp_file": ".continue/mcpServers/gitnexus-cgc.json",
+      "instructions_files": [".continue/rules/combo.md", "AGENTS.md"],
+      "skills_dir": null,
+      "skills_supported": false,
+      "auto_mcp": true,
+      "merge_strategy": "create-standalone-file",
+      "detection_markers": [".continue/", "config.yaml", "config.ts"],
+      "note": "Each MCP server is a separate .json or .yaml file in .continue/mcpServers/. We create a standalone file to avoid conflicting with user config."
+    },
+    "windsurf": {
+      "name": "Windsurf",
+      "mcp_family": "mcpServers",
+      "mcp_file": null,
+      "instructions_files": [".windsurfrules", "AGENTS.md"],
+      "skills_dir": null,
+      "skills_supported": false,
+      "auto_mcp": false,
+      "mcp_manual": true,
+      "mcp_manual_destination": "~/.codeium/windsurf/mcp_config.json (global — paste into Windsurf MCP Settings panel)",
+      "merge_strategy": "print-for-manual-paste",
+      "detection_markers": [".windsurf/", ".windsurfrules"],
+      "note": "No project-level MCP config. User must paste into global Windsurf MCP settings. We print the JSON for them."
+    },
+    "augment": {
+      "name": "Augment Code",
+      "mcp_family": "mcpServers",
+      "mcp_file": null,
+      "instructions_files": [".augment/rules/combo.md", "AGENTS.md"],
+      "skills_dir": null,
+      "skills_supported": false,
+      "auto_mcp": false,
+      "mcp_manual": true,
+      "mcp_manual_destination": "~/.augment/settings.json (global — use Augment Easy MCP panel or Import from JSON)",
+      "merge_strategy": "print-for-manual-paste",
+      "detection_markers": [".augment/"],
+      "note": "No project-level MCP config. User adds servers via IDE settings or CLI --mcp-config flag."
+    },
+    "copilot-vscode": {
+      "name": "GitHub Copilot (VS Code)",
+      "mcp_family": "servers",
+      "mcp_file": ".vscode/mcp.json",
+      "instructions_files": [".github/copilot-instructions.md", "AGENTS.md"],
+      "skills_dir": null,
+      "skills_supported": false,
+      "auto_mcp": true,
+      "merge_strategy": "merge-into-existing-json",
+      "detection_markers": [".vscode/mcp.json", ".github/copilot-instructions.md"],
+      "note": "VS Code uses 'servers' key with 'type': 'stdio'. Different from CLI which uses 'mcpServers'."
+    },
+    "copilot-cli": {
+      "name": "GitHub Copilot (CLI)",
+      "mcp_family": "mcpServers",
+      "mcp_file": ".mcp.json",
+      "instructions_files": ["AGENTS.md"],
+      "skills_dir": null,
+      "skills_supported": false,
+      "auto_mcp": true,
+      "merge_strategy": "merge-into-existing-json",
+      "detection_markers": [],
+      "note": "CLI mode uses standard mcpServers format. Only detected if .mcp.json exists but no other CLI platform markers are found."
+    },
+    "opencode": {
+      "name": "Opencode",
+      "mcp_family": "mcp",
+      "mcp_file": "opencode.json",
+      "instructions_files": ["AGENTS.md"],
+      "skills_dir": null,
+      "skills_supported": false,
+      "auto_mcp": true,
+      "merge_strategy": "merge-into-existing-json",
+      "detection_markers": ["opencode.json", ".opencode/"],
+      "note": "Uses 'mcp' key with 'type': 'local' (same as Kilo). Instructions can also be embedded in opencode.json."
+    }
+  },
+  "gitnexus_server": {
+    "description": "GitNexus MCP server — fetched via npx, no local install needed",
+    "mcpServers_format": {
+      "command": "npx",
+      "args": ["-y", "gitnexus@latest", "mcp"]
+    },
+    "mcp_format": {
+      "type": "local",
+      "command": ["npx", "-y", "gitnexus@latest", "mcp"]
+    },
+    "servers_format": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "gitnexus@latest", "mcp"]
+    }
+  },
+  "codegraphcontext_server": {
+    "description": "CodeGraphContext MCP server — requires uv + codegraphcontext installed. workdir/cwd must point to CGC installation.",
+    "mcpServers_format": {
+      "command": "uv",
+      "args": ["run", "cgc", "mcp"],
+      "cwd": "<CGC_INSTALL_PATH>"
+    },
+    "mcp_format": {
+      "type": "local",
+      "command": ["uv", "run", "cgc", "mcp"],
+      "workdir": "<CGC_INSTALL_PATH>"
+    },
+    "servers_format": {
+      "type": "stdio",
+      "command": "uv",
+      "args": ["run", "cgc", "mcp"],
+      "cwd": "<CGC_INSTALL_PATH>"
+    }
+  }
+}

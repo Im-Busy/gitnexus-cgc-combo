@@ -1,0 +1,10 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"python.defaultInterpreterPath": "c:\\Dev\\projects\\gitnexus_CGC_combo\\.venv\\Scripts\\python.exe"
+	}
+}
