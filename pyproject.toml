@@ -25,9 +25,9 @@ dependencies = [
 combo-setup = "src.config_gen:main"
 
 [project.urls]
-Homepage = "https://github.com/kilocode/gitnexus_CGC_combo"
-Repository = "https://github.com/kilocode/gitnexus_CGC_combo"
-Issues = "https://github.com/kilocode/gitnexus_CGC_combo/issues"
+Homepage = "https://github.com/Im-Busy/gitnexus-cgc-combo"
+Repository = "https://github.com/Im-Busy/gitnexus-cgc-combo"
+Issues = "https://github.com/Im-Busy/gitnexus-cgc-combo/issues"
 
 [build-system]
 requires = ["hatchling"]

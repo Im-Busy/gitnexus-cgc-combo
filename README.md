@@ -36,7 +36,7 @@ The agent detects your platform, checks your environment, installs both tools, g
 ### Option B: Manual Clone
 
 ```bash
-git clone https://github.com/kilocode/gitnexus_CGC_combo.git
+git clone https://github.com/Im-Busy/gitnexus-cgc-combo.git
 cd gitnexus-cgc-combo
 rm -rf .git && git init && git add -A && git commit -m "Initial: Code Intelligence Bootstrap Kit"
 ```
