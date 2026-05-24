@@ -5,6 +5,19 @@
 
 ---
 
+## Repository Architecture
+
+This project uses a **dual-repo architecture** adapted from the investment_trying pattern:
+
+| Repo | Remote | Branch | Contains |
+|------|--------|--------|----------|
+| **Private** | `private` → `gitnexus-cgc-combo-private` | `master` | Full dev: source, tests, docs, progress, memory, IDE configs |
+| **Public** | `public` → `gitnexus-cgc-combo` | `public` | Curated: source, tests, docs, Kilo infra, configs only |
+
+**Sync workflow:** `/repo-sync` — merges master→public, strips private files, pushes to public remote. See `.kilo/skills/dual-repo-sync/SKILL.md` for details.
+
+---
+
 ## Critical
 
 **You, the AI agent, are the installer.** Your job:
@@ -46,6 +59,141 @@ Before installing anything, determine which AI coding platform you are running u
 
 | Platform | Detection Signals |
 |----------|-------------------|
+<!-- gitnexus:start -->
+# GitNexus — Code Intelligence
+
+This project is indexed by GitNexus as **gitnexus_CGC_combo** (327 symbols, 515 relationships, 3 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+
+> If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
+
+## Always Do
+
+- **MUST run impact analysis before editing any symbol.** Before modifying a function, class, or method, run `gitnexus_impact({target: "symbolName", direction: "upstream"})` and report the blast radius (direct callers, affected processes, risk level) to the user.
+- **MUST run `gitnexus_detect_changes()` before committing** to verify your changes only affect expected symbols and execution flows.
+- **MUST warn the user** if impact analysis returns HIGH or CRITICAL risk before proceeding with edits.
+- When exploring unfamiliar code, use `gitnexus_query({query: "concept"})` to find execution flows instead of grepping. It returns process-grouped results ranked by relevance.
+- When you need full context on a specific symbol — callers, callees, which execution flows it participates in — use `gitnexus_context({name: "symbolName"})`.
+
+## Never Do
+
+- NEVER edit a function, class, or method without first running `gitnexus_impact` on it.
+- NEVER ignore HIGH or CRITICAL risk warnings from impact analysis.
+- NEVER rename symbols with find-and-replace — use `gitnexus_rename` which understands the call graph.
+- NEVER commit changes without running `gitnexus_detect_changes()` to check affected scope.
+
+## Resources
+
+| Resource | Use for |
+|----------|---------|
+| `gitnexus://repo/gitnexus_CGC_combo/context` | Codebase overview, check index freshness |
+| `gitnexus://repo/gitnexus_CGC_combo/clusters` | All functional areas |
+| `gitnexus://repo/gitnexus_CGC_combo/processes` | All execution flows |
+| `gitnexus://repo/gitnexus_CGC_combo/process/{name}` | Step-by-step execution trace |
+
+## CLI
+
+| Task | Read this skill file |
+|------|---------------------|
+| Understand architecture / "How does X work?" | `.kilo/skills/gitnexus/gitnexus-exploring/SKILL.md` |
+| Blast radius / "What breaks if I change X?" | `.kilo/skills/gitnexus/gitnexus-impact-analysis/SKILL.md` |
+| Trace bugs / "Why is X failing?" | `.kilo/skills/gitnexus/gitnexus-debugging/SKILL.md` |
+| Rename / extract / split / refactor | `.kilo/skills/gitnexus/gitnexus-refactoring/SKILL.md` |
+| Tools, resources, schema reference | `.kilo/skills/gitnexus/gitnexus-guide/SKILL.md` |
+| Index, status, clean, wiki CLI commands | `.kilo/skills/gitnexus/gitnexus-cli/SKILL.md` |
+| Work in the Tests area (56 symbols) | `.claude/skills/generated/tests/SKILL.md` |
+
+<!-- gitnexus:end -->
+
+---
+
+# CodeGraphContext — Complementary Graph Intelligence
+
+This project is ALSO indexed by CodeGraphContext (CGC) — a Python-native MCP server that builds a queryable graph database of the codebase with different strengths than GitNexus. **Use BOTH together for defense-in-depth code intelligence.**
+
+> Location: `C:\Dev\projects\gitnexus_CGC_combo` | CLI: `cgc` | MCP Server: 21 tools
+
+## GitNexus vs CGC — Complementary Roles
+
+| Axis | **GitNexus** (Node.js) | **CGC** (Python) |
+|------|----------------------|-------------------|
+| **Best for** | Impact analysis, rename safety, change detection | Code search, Cypher queries, visual graph |
+| **Core strength** | Execution flows, blast radius | Multi-DB Cypher graph, 20 languages |
+| **Pre-edit guard** | `impact` — tells you WHAT breaks | `analyze_code_relationships` — shows WHO calls |
+| **Commit guard** | `detect_changes` — maps git diffs to symbols | N/A |
+| **Safe rename** | `rename` — graph-assisted multi-file rename | Manual via Cypher + find |
+| **Deep exploration** | `query` — hybrid BM25+vector semantic search | `find_code` — keyword search + fuzzy matching |
+| **Schema query** | `cypher` — raw Cypher | `execute_cypher_query` — read-only Cypher |
+| **Visualization** | Web UI graph explorer | Viz server + 2D/3D force graphs |
+
+## When to Use Each
+
+| Situation | Use |
+|-----------|-----|
+| "What breaks if I change this function?" | **GitNexus** `impact` (blast radius + risk level) |
+| "What files changed in the diff and which symbols are affected?" | **GitNexus** `detect_changes` |
+| "I need to rename `foo()` to `bar()` across the codebase" | **GitNexus** `rename` (dry_run) |
+| "Show me all callers of this function" | Either — GitNexus `context` or CGC `analyze_code_relationships` |
+| "Find all functions matching this pattern" | **CGC** `find_code` (fuzzy search) |
+| "Show me the class hierarchy for X" | **CGC** `analyze_code_relationships` (inheritance) |
+| "Write a custom Cypher query to find patterns" | Either — same graph query language |
+| "Who imports this module?" | **CGC** `analyze_code_relationships` (imports type) |
+| "Find dead code across the codebase" | **CGC** `find_dead_code` |
+| "Show me a visual graph of module dependencies" | **CGC** `visualize_graph_query` + viz server |
+
+## Search Productivity — Use GitNexus/CGC Instead of Grep/Glob
+
+Both GitNexus and CGC index the entire codebase into knowledge graphs, enabling **concept-based search** that grep/glob cannot do. Agents MUST prefer these tools for code discovery.
+
+| Task | Use | Example |
+|------|-----|---------|
+| Find where a concept is used | **GitNexus** `query` or `context` | `npx gitnexus query "auth middleware"` |
+| Find all callers of a function | **GitNexus** `context` | `npx gitnexus context "validateUser"` |
+| What breaks if I change X? | **GitNexus** `impact` | `npx gitnexus impact "BaseController"` |
+| Find all functions named "X" | **CGC** `find name` or `find pattern` | `cgc find name "handleError"` |
+| Fuzzy search for a concept | **CGC** `find content` | `cgc find content "payment processing"` |
+| Find dead code | **CGC** `analyze dead-code` | `cgc analyze dead-code` |
+| Show class hierarchy | **CGC** `analyze` | `cgc analyze inheritance "BaseModel"` |
+| Which files changed and affected symbols | **GitNexus** `detect_changes` | `npx gitnexus detect_changes` |
+| Raw Cypher query | Either | `npx gitnexus cypher "MATCH (f:Function) RETURN f.name LIMIT 10"` |
+
+**This replaces:** `grep`, `rg`, `glob`, `codebase_search` for any search that involves understanding code structure, call relationships, or impact analysis.
+
+---
+
+## Keeping Indexes Fresh — MANDATORY Protocol
+
+**Neither GitNexus nor CGC auto-updates by default.** After creating, modifying, or deleting files, you MUST refresh the indexes.
+
+### Default: CGC Live Watcher (Auto)
+
+CGC's `watch` runs as a background process, monitoring `src/` for file changes and auto-updating the graph:
+
+```bash
+# Start once per machine reboot
+cd C:\Dev\projects\gitnexus_CGC_combo
+uv run cgc watch C:\Dev\projects\gitnexus_CGC_combo/src
+```
+
+**Agents:** verify the watcher is running at session start. If missing, restart it.
+
+### After Significant Changes: Reindex Both
+
+After creating/deleting 5+ files, moving modules, or adding new packages:
+
+```bash
+npx gitnexus analyze
+cd C:\Dev\projects\gitnexus_CGC_combo && uv run cgc index --force C:\Dev\projects\gitnexus_CGC_combo
+```
+
+### Freshness Check
+
+```bash
+npx gitnexus status
+uv run cgc stats C:\Dev\projects\gitnexus_CGC_combo
+```
+
+---
+
 | **Kilo** | System prompt mentions "Kilo", `.kilo/` directory exists, `kilo.json` at root |
 | **Claude Code** | Prompt mentions "Claude Code", `ANTHROPIC_MODEL` env var set, `.mcp.json` or `CLAUDE.md` exists |
 | **Cursor** | VS Code/Cursor IDE context, `.cursor/` directory or `.cursorrules` exists |
@@ -330,7 +478,7 @@ CRITICAL: Read AGENTS.md before all tasks. GitNexus + CGC combo is active.
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **{repo_name}** ({N} symbols, {N} relationships, {N} execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **gitnexus_CGC_combo** (327 symbols, 515 relationships, 3 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
 
@@ -353,10 +501,10 @@ This project is indexed by GitNexus as **{repo_name}** ({N} symbols, {N} relatio
 
 | Resource | Use for |
 |----------|---------|
-| `gitnexus://repo/{repo_name}/context` | Codebase overview, check index freshness |
-| `gitnexus://repo/{repo_name}/clusters` | All functional areas |
-| `gitnexus://repo/{repo_name}/processes` | All execution flows |
-| `gitnexus://repo/{repo_name}/process/{name}` | Step-by-step execution trace |
+| `gitnexus://repo/gitnexus_CGC_combo/context` | Codebase overview, check index freshness |
+| `gitnexus://repo/gitnexus_CGC_combo/clusters` | All functional areas |
+| `gitnexus://repo/gitnexus_CGC_combo/processes` | All execution flows |
+| `gitnexus://repo/gitnexus_CGC_combo/process/{name}` | Step-by-step execution trace |
 
 ## CLI
 
@@ -368,6 +516,8 @@ This project is indexed by GitNexus as **{repo_name}** ({N} symbols, {N} relatio
 | Rename / extract / split / refactor | `.claude/skills/gitnexus/gitnexus-refactoring/SKILL.md` |
 | Tools, resources, schema reference | `.claude/skills/gitnexus/gitnexus-guide/SKILL.md` |
 | Index, status, clean, wiki CLI commands | `.claude/skills/gitnexus/gitnexus-cli/SKILL.md` |
+| Work in the Tests area (56 symbols) | `.claude/skills/generated/tests/SKILL.md` |
+
 <!-- gitnexus:end -->
 
 ---
