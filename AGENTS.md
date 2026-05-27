@@ -611,26 +611,57 @@ uv run cgc stats {user_project_path}
 
 ---
 
-## Phase 7: Copy Skills (Kilo and Claude Code only)
+## Phase 7: Copy Skills (Kilo, Claude Code, and OpenCode)
 
-Only Kilo and Claude Code have native skill systems. For all other platforms, the behavioral rules embedded in AGENTS.md sections are sufficient.
+Only Kilo, Claude Code, and OpenCode have native skill systems. For all other platforms, the behavioral rules embedded in AGENTS.md sections are sufficient.
 
-### For Claude Code
+### Canonical Source
 
 ```
-Copy from this combo repo to user's project:
-  .kilo/skills/gitnexus/*       → {user_project}/.claude/skills/gitnexus/
-  .kilo/skills/codegraphcontext/* → {user_project}/.claude/skills/codegraphcontext/
-  .kilo/skills/graph-combo/*    → {user_project}/.claude/skills/graph-combo/
+Root skills/ is the canonical skill source in this repo:
+  skills/gitnexus/*
+  skills/codegraphcontext/*
+  skills/graph-combo/*
 ```
 
 ### For Kilo
 
 ```
 Copy from this combo repo to user's project:
-  .kilo/skills/gitnexus/*       → {user_project}/.kilo/skills/gitnexus/
-  .kilo/skills/codegraphcontext/* → {user_project}/.kilo/skills/codegraphcontext/
-  .kilo/skills/graph-combo/*    → {user_project}/.kilo/skills/graph-combo/
+  skills/gitnexus/*       → {user_project}/.kilo/skills/gitnexus/
+  skills/codegraphcontext/* → {user_project}/.kilo/skills/codegraphcontext/
+  skills/graph-combo/*    → {user_project}/.kilo/skills/graph-combo/
+```
+
+Also copy slash commands:
+  commands/*              → {user_project}/.kilo/command/
+```
+
+### For Claude Code
+
+```
+Copy from this combo repo to user's project:
+  skills/gitnexus/*       → {user_project}/.claude/skills/gitnexus/
+  skills/codegraphcontext/* → {user_project}/.claude/skills/codegraphcontext/
+  skills/graph-combo/*    → {user_project}/.claude/skills/graph-combo/
+```
+
+Also copy slash commands:
+  commands/*              → {user_project}/commands/
+```
+
+### For OpenCode
+
+```
+Copy from this combo repo to user's project:
+  skills/gitnexus/*       → {user_project}/.opencode/skills/gitnexus/
+  skills/codegraphcontext/* → {user_project}/.opencode/skills/codegraphcontext/
+  skills/graph-combo/*    → {user_project}/.opencode/skills/graph-combo/
+```
+
+Also copy commands and agents:
+  .opencode/commands/*    → {user_project}/.opencode/commands/
+  .opencode/agents/*      → {user_project}/.opencode/agents/
 ```
 
 ### For all other platforms
@@ -676,6 +707,80 @@ When performing code tasks in a project equipped with this combo, load these ski
 | Tool reference | `gitnexus-guide` |
 | CGC graph queries | `cgc-guide` |
 | Combined workflow | `combo-workflow` |
+
+---
+
+## Multi-Platform Skill Architecture
+
+This project uses a **canonical-source architecture** (modeled on planning-with-files v2.40.1's proven 17-platform pattern). Skills live in one canonical location and are synced to per-platform mirrors.
+
+### Architecture
+
+```
+.kilo/skills/           ← CANONICAL source of truth
+  ├── gitnexus/         (6 skills)
+  ├── codegraphcontext/ (1 skill)
+  ├── graph-combo/      (1 skill)
+  ├── dual-repo-setup/
+  ├── dual-repo-sync/
+  └── git-commit-push/
+
+.kiro/skills/           ← Mirror (synced from canonical)
+.pi/skills/             ← Mirror (synced from canonical)
+```
+
+### Preventing Cross-Platform Drift
+
+**Sync script** — `python scripts/sync-platforms.py` copies all SKILL.md files from `.kilo/skills/` (canonical) to `.claude/skills/`, `.codebuddy/skills/`, `.codex/skills/`, `.continue/skills/`, `.cursor/skills/`, `.factory/skills/`, `.gemini/skills/`, `.hermes/skills/`, `.kiro/skills/`, `.mastracode/skills/`, `.opencode/skills/`, and `.pi/skills/` using SHA-256 comparison. Only changed files are touched.
+
+- `--dry-run` — preview without writing
+- `--verify` — check for drift (exit code 1 if found, usable as CI gate)
+
+**Run sync after any skill edit:**
+```bash
+python scripts/sync-platforms.py
+python scripts/sync-platforms.py --verify   # Confirm no drift
+```
+
+**Version bump** — `python scripts/bump-project-version.py 1.2.0` atomically bumps `metadata.version` across ALL parity-locked SKILL.md files (canonical + all mirror platforms) plus `kilo.json`.
+
+### Platform-Specific Skill Paths
+
+When instructing agents to load skills, use platform-appropriate paths:
+
+| Platform | Skill Path |
+|----------|-----------|
+| Kilo | `.kilo/skills/gitnexus/gitnexus-exploring/SKILL.md` |
+| Claude Code | `.claude/skills/gitnexus/gitnexus-exploring/SKILL.md` |
+| Cursor | `.cursor/skills/gitnexus/gitnexus-exploring/SKILL.md` |
+| OpenCode | `.opencode/skills/gitnexus/gitnexus-exploring/SKILL.md` |
+| CodeBuddy | `.codebuddy/skills/gitnexus/gitnexus-exploring/SKILL.md` |
+| Codex | `.codex/skills/gitnexus/gitnexus-exploring/SKILL.md` |
+| Continue.dev | `.continue/skills/gitnexus/gitnexus-exploring/SKILL.md` |
+| FactoryAI | `.factory/skills/gitnexus/gitnexus-exploring/SKILL.md` |
+| Gemini CLI | `.gemini/skills/gitnexus/gitnexus-exploring/SKILL.md` |
+| Hermes | `.hermes/skills/gitnexus/gitnexus-exploring/SKILL.md` |
+| Kiro | `.kiro/skills/gitnexus/gitnexus-exploring/SKILL.md` |
+| Mastra Code | `.mastracode/skills/gitnexus/gitnexus-exploring/SKILL.md` |
+| Pi Agent | `.pi/skills/gitnexus/gitnexus-exploring/SKILL.md` |
+
+### Dual-Script Strategy
+
+All project scripts ship in both `.sh` (Unix/macOS/Linux) and `.ps1` (Windows PowerShell) variants. Both implement identical logic:
+
+| OS | Extension | Shebang | Shell |
+|----|-----------|---------|-------|
+| Unix/macOS/Linux | `.sh` | `#!/usr/bin/env bash` | bash |
+| Windows | `.ps1` | None (file extension) | PowerShell |
+
+### Keeping Skills Cross-Platform
+
+When editing any skill:
+1. Edit the canonical `.kilo/skills/<name>/SKILL.md` ONLY
+2. Run `python scripts/sync-platforms.py` to propagate to all mirrors
+3. Run `python scripts/sync-platforms.py --verify` to confirm zero drift
+
+**Never edit SKILL.md files in `.claude/skills/`, `.codebuddy/skills/`, `.codex/skills/`, `.continue/skills/`, `.cursor/skills/`, `.factory/skills/`, `.gemini/skills/`, `.hermes/skills/`, `.kiro/skills/`, `.mastracode/skills/`, `.opencode/skills/`, or `.pi/skills/` directly.** Those will be overwritten by the sync script.
 
 ---
 

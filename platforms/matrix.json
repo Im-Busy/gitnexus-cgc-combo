@@ -162,12 +162,12 @@
       "mcp_family": "mcp",
       "mcp_file": "opencode.json",
       "instructions_files": ["AGENTS.md"],
-      "skills_dir": null,
-      "skills_supported": false,
+      "skills_dir": ".opencode/skills",
+      "skills_supported": true,
       "auto_mcp": true,
       "merge_strategy": "merge-into-existing-json",
       "detection_markers": ["opencode.json", ".opencode/"],
-      "note": "Uses 'mcp' key with 'type': 'local' (same as Kilo). Instructions can also be embedded in opencode.json."
+      "note": "Uses 'mcp' key with 'type': 'local' (same as Kilo). Supports Agent Skills spec via .opencode/skills/. Instructions can also be embedded in opencode.json."
     }
   },
   "gitnexus_server": {

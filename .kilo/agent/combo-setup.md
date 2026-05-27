@@ -23,7 +23,7 @@ You are the **Combo Setup Agent**. Your job is to provision GitNexus + CodeGraph
 | Phase 4 | Index project: `npx gitnexus analyze --embeddings --skills` + `cgc index` |
 | Phase 5 | Start CGC watcher (background) |
 | Phase 6 | Write AGENTS.md sections with combo protocol |
-| Phase 7 | Copy skills (Kilo/Claude Code only) |
+| Phase 7 | Copy skills (Kilo, Claude Code, OpenCode) |
 | Phase 8 | Verify: status checks, watcher alive, both indexes fresh |
 
 ## Completion Report
