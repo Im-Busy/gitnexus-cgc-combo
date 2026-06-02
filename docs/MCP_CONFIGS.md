@@ -1,6 +1,6 @@
 # MCP Configuration Reference
 
-The Code Intelligence Bootstrap Kit generates MCP server configs for **all 10 supported platforms** using `config_gen.py`. Configs are **merged** into existing files — your other MCP servers are never touched.
+The Code Intelligence Bootstrap Kit generates MCP server configs for **all 17 supported platforms** using `config_gen.py`. Configs are **merged** into existing files — your other MCP servers are never touched.
 
 ## How Configs Are Generated
 
@@ -22,9 +22,9 @@ uv run python src/config_gen.py --detect --project-path <your_project> --cgc-pat
 
 The MCP ecosystem uses 3 subtly different JSON formats. The config generator handles all of them:
 
-### Family A: `mcpServers` — 7 platforms
+### Family A: `mcpServers` — 14 platforms
 
-Used by: **Claude Code, Cursor, Cline, Roo Code, Continue.dev, Windsurf, Augment Code**
+Used by: **Claude Code, Codex, Cursor, Cline, Roo Code, Continue.dev, Windsurf, Augment Code, FactoryAI, Gemini CLI, Hermes, Mastra Code, Pi Agent, GitHub Copilot (CLI)**
 
 ```json
 {
@@ -44,16 +44,23 @@ Used by: **Claude Code, Cursor, Cline, Roo Code, Continue.dev, Windsurf, Augment
 
 File paths by platform:
 - Claude Code → `.mcp.json`
+- Codex → `.mcp.json`
 - Cursor → `.cursor/mcp.json`
 - Cline → `.cline/mcp.json`
 - Roo Code → `.roo/mcp.json`
 - Continue.dev → `.continue/mcpServers/gitnexus-cgc.json` (standalone file)
 - Windsurf → `~/.codeium/windsurf/mcp_config.json` (manual — paste into global MCP Settings)
 - Augment Code → `~/.augment/settings.json` (manual — paste via IDE Easy MCP panel)
+- FactoryAI → `.mcp.json`
+- Gemini CLI → `.mcp.json`
+- Hermes → `.mcp.json`
+- Mastra Code → `.mcp.json`
+- Pi Agent → `.mcp.json`
+- GitHub Copilot (CLI) → `.mcp.json` (shared detection)
 
-### Family B: `mcp` — 2 platforms
+### Family B: `mcp` — 3 platforms
 
-Used by: **Kilo, Opencode**
+Used by: **Kilo, Opencode, Kiro**
 
 ```json
 {
@@ -80,6 +87,7 @@ Key differences from `mcpServers`:
 File paths:
 - Kilo → `.kilo/kilo.json` (merged with existing `mcp` entries)
 - Opencode → `opencode.json` (merged with existing `mcp` entries)
+- Kiro → `kiro.json` (merged with existing `mcp` entries)
 
 ### Family C: `servers` — 1 platform
 

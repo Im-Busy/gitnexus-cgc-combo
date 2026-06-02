@@ -11,7 +11,7 @@ The agent reads AGENTS.md and provisions both tools for the user's project.
 
 ## Architecture
 - `AGENTS.md` — 8-phase bootstrap protocol (single source of truth)
-- `platforms/matrix.json` — declarative platform registry (10 platforms, 3 format families)
+- `platforms/matrix.json` — declarative platform registry (17 platforms, 3 format families)
 - `src/config_gen.py` — multi-platform MCP config generator (merge, never replace)
 - `src/setup_combo.py` — cross-platform environment detection
 - `.kilo/skills/` — 8 operational skills (gitnexus × 6 + cgc × 1 + combo × 1)

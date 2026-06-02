@@ -48,6 +48,7 @@ Before installing anything, determine which AI coding platform you are running u
 |----------|-------------------|
 | **Kilo** | System prompt mentions "Kilo", `.kilo/` directory exists, `kilo.json` at root |
 | **Claude Code** | Prompt mentions "Claude Code", `ANTHROPIC_MODEL` env var set, `.mcp.json` or `CLAUDE.md` exists |
+| **Codex** | `.codex/` directory exists |
 | **Cursor** | VS Code/Cursor IDE context, `.cursor/` directory or `.cursorrules` exists |
 | **Cline** | `.cline/` directory or `.clinerules` exists |
 | **Roo Code** | `.roo/` directory or `.roorules` exists |
@@ -56,6 +57,12 @@ Before installing anything, determine which AI coding platform you are running u
 | **Windsurf** | `.windsurf/` directory or `.windsurfrules` exists |
 | **Augment Code** | `.augment/` directory exists |
 | **GitHub Copilot** | `.vscode/mcp.json` or `.github/copilot-instructions.md` exists |
+| **FactoryAI** | `.factory/` directory exists |
+| **Gemini CLI** | `.gemini/` directory exists |
+| **Hermes** | `.hermes/` directory exists |
+| **Kiro** | `.kiro/` directory exists, `kiro.json` at root |
+| **Mastra Code** | `.mastracode/` directory exists |
+| **Pi Agent** | `.pi/` directory exists |
 
 ### Action
 

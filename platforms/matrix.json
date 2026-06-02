@@ -10,7 +10,7 @@
         "args": ["array of strings"],
         "env": "optional object of env vars"
       },
-      "platforms": ["claude-code", "cursor", "cline", "roo-code", "continue", "windsurf", "augment", "copilot-cli"]
+      "platforms": ["claude-code", "cursor", "cline", "roo-code", "continue", "windsurf", "augment", "copilot-cli", "codex", "factory", "gemini", "hermes", "mastracode", "pi"]
     },
     "mcp": {
       "wrapper_key": "mcp",
@@ -19,7 +19,7 @@
         "command": ["array of strings (executable + args combined)"],
         "workdir": "optional string (working directory)"
       },
-      "platforms": ["kilo", "opencode"]
+      "platforms": ["kilo", "opencode", "kiro"]
     },
     "servers": {
       "wrapper_key": "servers",
@@ -167,7 +167,92 @@
       "auto_mcp": true,
       "merge_strategy": "merge-into-existing-json",
       "detection_markers": ["opencode.json", ".opencode/"],
-      "note": "Uses 'mcp' key with 'type': 'local' (same as Kilo). Instructions can also be embedded in opencode.json."
+      "note": "Uses 'mcp' key with 'type': 'local' (same as Kilo). Supports Agent Skills spec via .opencode/skills/. Instructions can also be embedded in opencode.json."
+    },
+    "codex": {
+      "name": "Codex",
+      "mcp_family": "mcpServers",
+      "mcp_file": ".mcp.json",
+      "instructions_files": ["AGENTS.md"],
+      "skills_dir": ".codex/skills",
+      "skills_supported": true,
+      "auto_mcp": true,
+      "merge_strategy": "merge-into-existing-json",
+      "detection_markers": [".codex/"],
+      "note": "Standard mcpServers format. Skills via .codex/skills/."
+    },
+    "factory": {
+      "name": "FactoryAI",
+      "mcp_family": "mcpServers",
+      "mcp_file": ".mcp.json",
+      "instructions_files": ["AGENTS.md"],
+      "skills_dir": ".factory/skills",
+      "skills_supported": true,
+      "auto_mcp": true,
+      "merge_strategy": "merge-into-existing-json",
+      "detection_markers": [".factory/"],
+      "note": "Standard mcpServers format. Skills via .factory/skills/."
+    },
+    "gemini": {
+      "name": "Gemini CLI",
+      "mcp_family": "mcpServers",
+      "mcp_file": ".mcp.json",
+      "instructions_files": ["AGENTS.md"],
+      "skills_dir": ".gemini/skills",
+      "skills_supported": true,
+      "auto_mcp": true,
+      "merge_strategy": "merge-into-existing-json",
+      "detection_markers": [".gemini/"],
+      "note": "Standard mcpServers format. Skills via .gemini/skills/."
+    },
+    "hermes": {
+      "name": "Hermes",
+      "mcp_family": "mcpServers",
+      "mcp_file": ".mcp.json",
+      "instructions_files": ["AGENTS.md"],
+      "skills_dir": ".hermes/skills",
+      "skills_supported": true,
+      "auto_mcp": true,
+      "merge_strategy": "merge-into-existing-json",
+      "detection_markers": [".hermes/"],
+      "note": "Standard mcpServers format. Skills via .hermes/skills/."
+    },
+    "kiro": {
+      "name": "Kiro",
+      "mcp_family": "mcp",
+      "mcp_file": "kiro.json",
+      "instructions_files": ["AGENTS.md"],
+      "skills_dir": ".kiro/skills",
+      "skills_supported": true,
+      "auto_mcp": true,
+      "merge_strategy": "merge-into-existing-json",
+      "detection_markers": [".kiro/", "kiro.json"],
+      "note": "Uses 'mcp' key with 'type': 'local' (same as Kilo). Skills via .kiro/skills/."
+    },
+    "mastracode": {
+      "name": "Mastra Code",
+      "mcp_family": "mcpServers",
+      "mcp_file": ".mcp.json",
+      "instructions_files": ["AGENTS.md"],
+      "skills_dir": ".mastracode/skills",
+      "skills_supported": true,
+      "auto_mcp": true,
+      "merge_strategy": "merge-into-existing-json",
+      "detection_markers": [".mastracode/"],
+      "note": "Standard mcpServers format. Skills via .mastracode/skills/."
+    },
+    "pi": {
+      "name": "Pi Agent",
+      "mcp_family": "mcpServers",
+      "mcp_file": ".mcp.json",
+      "instructions_files": ["AGENTS.md"],
+      "skills_dir": ".pi/skills",
+      "skills_supported": true,
+      "auto_mcp": true,
+      "merge_strategy": "merge-into-existing-json",
+      "detection_markers": [".pi/"],
+      "note": "Standard mcpServers format. Skills via .pi/skills/."
+    }
     }
   },
   "gitnexus_server": {

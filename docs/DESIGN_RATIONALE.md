@@ -53,7 +53,7 @@ The bootstrap kit has three layers with distinct responsibilities:
 ├─────────────────────────────────────────────────────────────┤
 │  config_gen.py (242 LOC) + platforms/matrix.json (208 LOC) │
 │  The data engine. Structured JSON generation across 3       │
-│  MCP format families × 10 platforms. Agents are bad at     │
+│  MCP format families × 17 platforms. Agents are bad at     │
 │  structured JSON; Python is not.                            │
 ├─────────────────────────────────────────────────────────────┤
 │  .kilo/skills/ (8 skill files)                              │
@@ -85,11 +85,11 @@ The registry documents three distinct MCP JSON formats:
 
 | Family | Wrapper Key | Used By | Format |
 |--------|-------------|---------|--------|
-| `mcpServers` | `"mcpServers"` | Claude Code, Cursor, Cline, Roo Code, Continue, Windsurf, Augment | `command` + `args` + `env` (flat) |
-| `mcp` | `"mcp"` | Kilo, Opencode | `type: "local"` + `command` array + `workdir` |
+| `mcpServers` | `"mcpServers"` | Claude Code, Codex, Cursor, Cline, Roo Code, Continue, Windsurf, Augment, Copilot CLI, Factory, Gemini, Hermes, Mastra, Pi | `command` + `args` + `env` (flat) |
+| `mcp` | `"mcp"` | Kilo, Opencode, Kiro | `type: "local"` + `command` array + `workdir` |
 | `servers` | `"servers"` | Copilot (VS Code) | `type: "stdio"` + `command` + `args` + `env` |
 
-These 3 families cover 10 platforms. If a new platform uses any of these formats, its entry is purely additive data. If a new format emerges (e.g., `mcpServers` with `url` instead of `command`), `config_gen.py` extends with a new family handler.
+These 3 families cover 17 platforms. If a new platform uses any of these formats, its entry is purely additive data. If a new format emerges (e.g., `mcpServers` with `url` instead of `command`), `config_gen.py` extends with a new family handler.
 
 ### Merge Strategies
 
@@ -97,7 +97,7 @@ Not all platforms support automatic config writing:
 
 | Strategy | Platforms | Behavior |
 |----------|-----------|----------|
-| `merge-into-existing-json` | Kilo, Claude Code, Cursor, Cline, Roo Code, Opencode, Copilot | Parses existing config, adds entries, preserves all user content |
+| `merge-into-existing-json` | Kilo, Claude Code, Codex, Cursor, Cline, Roo Code, Opencode, Copilot, Factory, Gemini, Hermes, Kiro, Mastra, Pi | Parses existing config, adds entries, preserves all user content |
 | `create-standalone-file` | Continue.dev | Creates a new file in a directory that expects individual server files |
 | `print-for-manual-paste` | Windsurf, Augment Code | Prints JSON to stdout. User must paste into global settings. |
 
@@ -127,7 +127,7 @@ AI agents operate on text. When told to "add a gitnexus server to my .mcp.json",
 3. Generate the correct new JSON (must match the platform's format family)
 4. Write back (risk: corrupting the entire file if JSON is malformed)
 
-Each of these steps is fragile for 10 platforms across 3 format families. One missing comma, one wrong key name, and the agent's MCP tools stop working entirely — silently breaking the session.
+Each of these steps is fragile for 17 platforms across 3 format families. One missing comma, one wrong key name, and the agent's MCP tools stop working entirely — silently breaking the session.
 
 ### Design: Parsed, Not Generated
 
@@ -286,9 +286,9 @@ The single source of truth. An 8-phase bootstrap sequence written as executable 
 
 ### `config_gen.py` (242 lines — MCP config generation)
 
-The one script agents genuinely need. MCP config JSON varies across 10 platforms in 3 format families. Structured JSON manipulation — parsing existing configs, adding entries, preserving user's other servers, handling merge-vs-standalone-vs-print strategies — is error-prone for an agent writing raw text. A Python script with proper JSON parsing (`json.load`/`json.dump`) is the right tool for this job.
+The one script agents genuinely need. MCP config JSON varies across 17 platforms in 3 format families. Structured JSON manipulation — parsing existing configs, adding entries, preserving user's other servers, handling merge-vs-standalone-vs-print strategies — is error-prone for an agent writing raw text. A Python script with proper JSON parsing (`json.load`/`json.dump`) is the right tool for this job.
 
-`config_gen.py` reads `platforms/matrix.json` (declarative registry of all 10 platforms) and generates the correct MCP server JSON for any detected platform. It merges into existing configs (never overwrites), handles 3 format families (`mcpServers`, `mcp`, `servers`), and is idempotent (re-running returns `[SKIP]`).
+`config_gen.py` reads `platforms/matrix.json` (declarative registry of all 17 platforms) and generates the correct MCP server JSON for any detected platform. It merges into existing configs (never overwrites), handles 3 format families (`mcpServers`, `mcp`, `servers`), and is idempotent (re-running returns `[SKIP]`).
 
 ### `platforms/matrix.json` (208 lines — platform registry)
 
@@ -370,7 +370,7 @@ The scope review cut 232 tests along with the code they tested. This is not a re
    - Create new config on empty project
    - Idempotency (SKIP on re-run)
    - Force mode (backup + write fresh on invalid JSON)
-   - Detection on all 10 platforms
+   - Detection on all 17 platforms
    - Error handling (missing matrix, invalid platform, etc.)
 
 2. Data validation for matrix.json (~10 tests)
