@@ -17,7 +17,7 @@ Gives your AI coding agent a **dual knowledge graph** of your codebase — two c
 - Query the codebase with Cypher (same graph query language used by Neo4j)
 - Visualize module dependencies as an interactive graph
 
-Supports **10 AI coding platforms** out of the box: Kilo, Claude Code, Cursor, Cline, Roo Code, Continue.dev, Opencode, GitHub Copilot, Windsurf, and Augment Code.
+Supports **17 AI coding platforms** out of the box: Kilo, Claude Code, Codex, Cursor, Cline, Roo Code, Continue.dev, Opencode, GitHub Copilot (VS Code + CLI), Windsurf, Augment Code, FactoryAI, Gemini CLI, Hermes, Kiro, Mastra Code, and Pi Agent.
 
 ## Quick Start
 
@@ -123,7 +123,7 @@ Mindset shift: you stop grepping and start querying. Instead of `rg "auth" --inc
 When you say `/combo-setup`, the agent runs 8 phases automatically. Here is what happens under the hood:
 
 ### Phase 0: Platform Self-Identification
-The agent checks its own system prompt, environment variables, and filesystem markers to determine which AI coding platform it is running under. It supports 10 platforms with a declarative detection system — each platform has a set of filesystem markers (e.g., `.kilo/` + `kilo.json` for Kilo, `.mcp.json` + `CLAUDE.md` for Claude Code).
+The agent checks its own system prompt, environment variables, and filesystem markers to determine which AI coding platform it is running under. It supports 17 platforms with a declarative detection system — each platform has a set of filesystem markers (e.g., `.kilo/` + `kilo.json` for Kilo, `.mcp.json` + `CLAUDE.md` for Claude Code).
 
 ### Phase 1: Environment Detection
 Checks your OS, shell, Node.js version, Python version, uv, and git. Reports any missing prerequisites and guides installation. If Python is missing, `uv python install 3.13` auto-handles it.
@@ -133,7 +133,7 @@ Checks your OS, shell, Node.js version, Python version, uv, and git. Reports any
 - **CodeGraphContext** — `uv sync` installs from `pyproject.toml` dependencies, or `uv pip install codegraphcontext` for global install.
 
 ### Phase 3: Generate MCP Configs
-Runs `config_gen.py` which reads `platforms/matrix.json` — a declarative registry of all 10 supported platforms — and generates the correct MCP server JSON for each detected platform. Three format families are handled automatically: `mcpServers` (7 platforms like Cursor, Windsurf), `mcp` (Kilo, Opencode), and `servers` (GitHub Copilot VS Code). Generated configs are **merged** into existing config files — your other MCP servers are preserved untouched. Idempotent: re-running returns `[SKIP]`.
+Runs `config_gen.py` which reads `platforms/matrix.json` — a declarative registry of all 17 supported platforms — and generates the correct MCP server JSON for each detected platform. Three format families are handled automatically: `mcpServers` (14 platforms like Cursor, Windsurf, Codex, Factory), `mcp` (Kilo, Opencode, Kiro), and `servers` (GitHub Copilot VS Code). Generated configs are **merged** into existing config files — your other MCP servers are preserved untouched. Idempotent: re-running returns `[SKIP]`.
 
 ### Phase 4: Index Your Project
 - `npx gitnexus analyze --embeddings --skills` builds the GitNexus knowledge graph with embeddings for semantic search and skill files for agent guidance.
@@ -146,7 +146,7 @@ Starts a background process that monitors `src/` for file changes and auto-updat
 Extracts the GitNexus + CGC behavioral protocol template from this repo's AGENTS.md, substitutes actual index stats (symbol count, relationship count, execution flow count), and idempotently injects it into your project's AGENTS.md using `<!-- gitnexus:start -->` / `<!-- gitnexus:end -->` markers. Writes short meta-directives into platform-specific instruction files (`CLAUDE.md`, `.cursorrules`, `.clinerules`, etc.) pointing the agent to AGENTS.md.
 
 ### Phase 7: Copy Operational Skills
-Copies 8 skill files to your project. For Kilo: `.kilo/skills/`; for Claude Code: `.claude/skills/`. Skills cover: exploring architecture, impact analysis, debugging, refactoring, CLI operations, tool reference (GitNexus), CGC graph queries, and unified combo workflow. Other platforms get behavioral rules embedded in AGENTS.md instead.
+Copies 8 skill files to your project. For Kilo: `.kilo/skills/`; for Claude Code: `.claude/skills/`; for Codex: `.codex/skills/`; for OpenCode: `.opencode/skills/`; similarly for FactoryAI, Gemini, Hermes, Kiro, Mastra, and Pi. Skills cover: exploring architecture, impact analysis, debugging, refactoring, CLI operations, tool reference (GitNexus), CGC graph queries, and unified combo workflow. Other platforms get behavioral rules embedded in AGENTS.md instead.
 
 ### Phase 8: Verification
 Runs a full health check: GitNexus index freshness, CGC index stats, watcher process status, tool versions, and MCP connectivity. Reports a summary of what passed and what needs attention.
@@ -159,16 +159,24 @@ The bootstrap kit auto-detects your AI coding platform and generates the correct
 |----------|-----------|-------------|:--:|-------------------|
 | **Kilo** | `mcp` | `.kilo/kilo.json` | Yes | `.kilo/`, `kilo.json` |
 | **Claude Code** | `mcpServers` | `.mcp.json` | Yes | `.mcp.json`, `CLAUDE.md` |
+| **Codex** | `mcpServers` | `.mcp.json` | Yes | `.codex/` |
 | **Cursor** | `mcpServers` | `.cursor/mcp.json` | — | `.cursor/`, `.cursorrules` |
 | **Cline** | `mcpServers` | `.cline/mcp.json` | — | `.cline/`, `.clinerules` |
 | **Roo Code** | `mcpServers` | `.roo/mcp.json` | — | `.roo/`, `.roorules` |
 | **Continue.dev** | `mcpServers` | `.continue/mcpServers/gitnexus-cgc.json` | — | `.continue/`, `config.yaml` |
-| **Opencode** | `mcp` | `opencode.json` | — | `opencode.json`, `.opencode/` |
+| **Opencode** | `mcp` | `opencode.json` | Yes | `opencode.json`, `.opencode/` |
 | **Copilot (VS Code)** | `servers` | `.vscode/mcp.json` | — | `.vscode/mcp.json` |
+| **Copilot (CLI)** | `mcpServers` | `.mcp.json` | — | `.mcp.json` (shared detection) |
 | **Windsurf** | `mcpServers` | Manual paste (global) | — | `.windsurf/`, `.windsurfrules` |
 | **Augment Code** | `mcpServers` | Manual paste (global) | — | `.augment/` |
+| **FactoryAI** | `mcpServers` | `.mcp.json` | Yes | `.factory/` |
+| **Gemini CLI** | `mcpServers` | `.mcp.json` | Yes | `.gemini/` |
+| **Hermes** | `mcpServers` | `.mcp.json` | Yes | `.hermes/` |
+| **Kiro** | `mcp` | `kiro.json` | Yes | `.kiro/`, `kiro.json` |
+| **Mastra Code** | `mcpServers` | `.mcp.json` | Yes | `.mastracode/` |
+| **Pi Agent** | `mcpServers` | `.mcp.json` | Yes | `.pi/` |
 
-MCP configs use **merge-into-existing** strategy (7 platforms), **create-standalone-file** (Continue.dev), or **print-for-manual-paste** (Windsurf, Augment — both lack project-level MCP support). Existing MCP servers are never touched.
+MCP configs use **merge-into-existing** strategy (15 platforms), **create-standalone-file** (Continue.dev), or **print-for-manual-paste** (Windsurf, Augment — both lack project-level MCP support). Existing MCP servers are never touched.
 
 ## Architecture & Technical Implementation
 
@@ -182,7 +190,7 @@ gitnexus_CGC_combo/
 ├── README.md                 # Human-facing overview (this file)
 ├── pyproject.toml            # Single entry point: combo-setup
 ├── platforms/
-│   └── matrix.json           # Declarative platform registry (10 platforms, 3 MCP families)
+│   └── matrix.json           # Declarative platform registry (17 platforms, 3 MCP families)
 ├── src/
 │   └── config_gen.py         # MCP config engine + setup orchestrator (~300 LOC)
 ├── tests/
@@ -209,8 +217,8 @@ Three MCP format families are supported:
 
 | Family | Top-Level Key | Server Type | Platforms |
 |--------|--------------|-------------|-----------|
-| `mcpServers` | `"mcpServers"` | `command` + `args` + `cwd` | 7 (Claude Code, Cursor, Cline, Roo Code, Continue.dev, Windsurf, Augment) |
-| `mcp` | `"mcp"` | `"type": "local"`, `command` array + `workdir` | 2 (Kilo, Opencode) |
+| `mcpServers` | `"mcpServers"` | `command` + `args` + `cwd` | 14 (Claude Code, Codex, Cursor, Cline, Roo Code, Continue, Windsurf, Augment, Copilot CLI, Factory, Gemini, Hermes, Mastra, Pi) |
+| `mcp` | `"mcp"` | `"type": "local"`, `command` array + `workdir` | 3 (Kilo, Opencode, Kiro) |
 | `servers` | `"servers"` | `"type": "stdio"`, `command` + `args` + `cwd` | 1 (GitHub Copilot VS Code) |
 
 Each family has subtly different JSON structure, key names, and semantics. The matrix handles all three.
