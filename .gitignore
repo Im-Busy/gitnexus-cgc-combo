@@ -38,3 +38,10 @@ logs/
 # Kilo worktrees
 .kilo/worktrees/
 .kilo/node_modules/
+
+# ===== PUBLIC REPO EXCLUSIONS (both branches) =====
+# These should never be tracked in any branch
+
+# Claude IDE configs (platform-specific)
+/.claude/
+/CLAUDE.md
