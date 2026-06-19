@@ -36,5 +36,40 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["src"]
 
+[tool.hatch.build.targets.wheel.force-include]
+"platforms/matrix.json" = "platforms/matrix.json"
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+    ".claude/",
+    ".codebuddy/",
+    ".codex/",
+    ".continue/",
+    ".cursor/",
+    ".factory/",
+    ".gemini/",
+    ".hermes/",
+    ".kilo/",
+    ".kiro/",
+    ".mastracode/",
+    ".opencode/",
+    ".pi/",
+    ".vscode/",
+    ".cgcignore",
+    ".npmignore",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "cli.js",
+    "package.json",
+    "uv.lock",
+    ".gitnexus/",
+    ".cgc/",
+    ".venv/",
+    "node_modules/",
+    "progress_docs/",
+    "whitelist.txt",
+    "dist/",
+]
+
 [tool.uv]
 package = true

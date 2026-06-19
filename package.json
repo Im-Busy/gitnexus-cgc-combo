@@ -1,0 +1,42 @@
+{
+  "name": "gitnexus-cgc-combo",
+  "version": "0.1.1",
+  "description": "Code Intelligence Bootstrap Kit — provision GitNexus + CodeGraphContext for AI coding agents with one command",
+  "keywords": [
+    "gitnexus",
+    "codegraphcontext",
+    "cgc",
+    "code-intelligence",
+    "mcp",
+    "ai-agent",
+    "impact-analysis",
+    "dead-code",
+    "code-graph"
+  ],
+  "license": "MIT",
+  "author": "Joey Chiu",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Im-Busy/gitnexus-cgc-combo.git"
+  },
+  "homepage": "https://github.com/Im-Busy/gitnexus-cgc-combo#readme",
+  "bugs": {
+    "url": "https://github.com/Im-Busy/gitnexus-cgc-combo/issues"
+  },
+  "bin": {
+    "gitnexus-cgc-combo": "cli.js"
+  },
+  "files": [
+    "cli.js",
+    "src/",
+    "platforms/",
+    "pyproject.toml",
+    "uv.lock",
+    "skills/",
+    "commands/"
+  ],
+  "scripts": {},
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

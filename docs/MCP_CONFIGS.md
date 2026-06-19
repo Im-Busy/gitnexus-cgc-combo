@@ -146,7 +146,7 @@ CGC's MCP config needs a working directory (`workdir` / `cwd`). The path depends
 `config_gen.py` uses Python's `pathlib` which handles platform paths natively. Windows paths are written correctly:
 
 ```json
-"cwd": "C:\\Dev\\useful_repos\\CodeGraphContext"
+"cwd": "C:\\Dev\\useful_repos\\02-code-intelligence\\CodeGraphContext"
 ```
 
 ## CGC Source Install (Alternative)

@@ -47,8 +47,8 @@ Before installing anything, determine which AI coding platform you are running u
 | Platform | Detection Signals |
 |----------|-------------------|
 | **Kilo** | System prompt mentions "Kilo", `.kilo/` directory exists, `kilo.json` at root |
+| **OpenCode** | System prompt mentions "OpenCode", `.opencode/` directory exists, `opencode.json` at root |
 | **Claude Code** | Prompt mentions "Claude Code", `ANTHROPIC_MODEL` env var set, `.mcp.json` or `CLAUDE.md` exists |
-| **Codex** | `.codex/` directory exists |
 | **Cursor** | VS Code/Cursor IDE context, `.cursor/` directory or `.cursorrules` exists |
 | **Cline** | `.cline/` directory or `.clinerules` exists |
 | **Roo Code** | `.roo/` directory or `.roorules` exists |
@@ -476,9 +476,9 @@ Only Kilo and Claude Code have native skill systems. For all other platforms, th
 
 ```
 Copy from this combo repo to user's project:
-  .kilo/skills/gitnexus/*       → {user_project}/.claude/skills/gitnexus/
-  .kilo/skills/codegraphcontext/* → {user_project}/.claude/skills/codegraphcontext/
-  .kilo/skills/graph-combo/*    → {user_project}/.claude/skills/graph-combo/
+  .opencode/skills/gitnexus/*       → {user_project}/.claude/skills/gitnexus/
+  .opencode/skills/codegraphcontext/* → {user_project}/.claude/skills/codegraphcontext/
+  .opencode/skills/graph-combo/*    → {user_project}/.claude/skills/graph-combo/
 ```
 
 ### For Kilo
