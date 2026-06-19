@@ -39,6 +39,13 @@ logs/
 .kilo/worktrees/
 .kilo/node_modules/
 
+# Plan artifacts
+.omo/
+
+# Personal IDE config
+*.code-workspace
+.python-version
+
 # ===== PUBLIC REPO EXCLUSIONS (both branches) =====
 # These should never be tracked in any branch
 
