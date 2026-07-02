@@ -17,34 +17,39 @@ AI agents grep blindly through files. This kit gives them a dual knowledge graph
 ## Architecture
 
 ```mermaid
+---
+config:
+  theme: neutral
+  htmlLabels: false
+---
 graph TB
-    subgraph INPUT["User Says /combo-setup"]
-        U1["Agent reads AGENTS.md<br/>as instruction manual"]
+    subgraph INPUT [User Says /combo-setup]
+        U1["`Agent reads AGENTS.md\nas instruction manual`"]
     end
 
     INPUT --> P0
-    subgraph P0["Phase 0: Detect Platform"]
-        D1["Filesystem markers<br/>17 platforms · 3 MCP families"]
+    subgraph P0 [Phase 0: Detect Platform]
+        D1["`Filesystem markers\n17 platforms · 3 MCP families`"]
     end
 
     P0 --> P1
-    subgraph P1["Phase 1-2: Check + Install"]
-        E1["Node.js · Python · uv · git<br/>Install GitNexus + CGC"]
+    subgraph P1 [Phase 1-2: Check + Install]
+        E1["`Node.js · Python · uv · git\nInstall GitNexus + CGC`"]
     end
 
     P1 --> P2
-    subgraph P2["Phase 3-4: Config + Index"]
-        C1["Generate MCP configs<br/>Index both knowledge graphs"]
+    subgraph P2 [Phase 3-4: Config + Index]
+        C1["`Generate MCP configs\nIndex both knowledge graphs`"]
     end
 
     P2 --> P3
-    subgraph P3["Phase 5-7: Watch + Inject + Skills"]
-        W1["Live file watcher<br/>Inject AGENTS.md protocol<br/>Copy 8 skill files"]
+    subgraph P3 [Phase 5-7: Watch + Inject + Skills]
+        W1["`Live file watcher\nInject AGENTS.md protocol\nCopy 8 skill files`"]
     end
 
     P3 --> P4
-    subgraph P4["Phase 8: Verify"]
-        V1["Index freshness · Watcher status<br/>Tool versions · MCP connectivity"]
+    subgraph P4 [Phase 8: Verify]
+        V1["`Index freshness · Watcher status\nTool versions · MCP connectivity`"]
     end
 
     style INPUT fill:#3b82f6,stroke:#1d4ed8,color:#fff
